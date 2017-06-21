@@ -16,4 +16,4 @@ To view the page:
 
 `localhost:8000/injection`
 
-Play with the page as needed. Do not commit the sqlite.db3 (that's a lite hack to persist data)
+Play with the page as needed. Do not commit the db.sqlite3 (that's a lite hack to persist data)
