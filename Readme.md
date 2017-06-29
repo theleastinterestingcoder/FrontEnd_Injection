@@ -1,19 +1,14 @@
 FrontEnd_Injection
 ===========
 
-Write some unsafe HTML/CSS/Javascript code and mess up with some sign up forms. 
+Challenge 1 : Javascript injection
+----------
 
-Requirements (maybe more)
-- Django 11.1
-- Python 2.7
+Description - a TA developer forgot to escape strings on his web page. Vandalize the page and embed https://www.staggeringbeauty.com/ into the *background* of the page
 
+`Hint: There's a private sesson that only you have access to. Use it`
 
-To launch server
+Challenge 2 : Cross site scripting
+----------
+Description - The same TA developer forgot to enable features that prevents cross site forgery exceptions. Write a query that will log out any logged in users when they see the page. Bonus points (+5) if you can lock the open session. 
 
-`python manage.py runserver`
-
-To view the page:
-
-`localhost:8000/injection`
-
-Play with the page as needed. Do not commit the db.sqlite3 (that's a lite hack to persist data)
