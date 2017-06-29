@@ -152,8 +152,6 @@ def view_session(request, session_id, leaderboard_id):
         'current_user_is_winning' : current_user_is_winning
     }
 
-    print 'current team: %s, request.user.username %s' % (c.current_team, request.user.username)
-    print 'current winning team %s' % (current_user_is_winning)
 
     return HttpResponse(template.render(context, request))
 
