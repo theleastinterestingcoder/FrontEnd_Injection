@@ -31,7 +31,6 @@ def logout_request(request):
     logout(request)
     return login_request(request)
 
-# @login_required
 def index(request):
     template = loader.get_template('index.html')
     first_session = Session.objects.first()
@@ -42,6 +41,7 @@ def index(request):
 
     return HttpResponse(template.render(context, request))
 
+@login_required(login_url='/injection/login')
 def reset_session(request, session_id):
     template = loader.get_template('index.html')
     session = get_object_or_404(Session, pk=session_id)
@@ -62,6 +62,7 @@ def reset_session(request, session_id):
 
     return HttpResponse(template.render(context, request))
 
+@login_required(login_url='/injection/login')
 def submit(request, session_id):
     template = loader.get_template('index.html')
     session = get_object_or_404(Session, pk=session_id)
