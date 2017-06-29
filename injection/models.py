@@ -22,3 +22,12 @@ class Seating(models.Model):
     def create(cls, session, member, guest):
         seating = cls(session=session, member=member, guest=guest)
         return seating
+
+# class LeaderBoard(models.Model):
+#     @classmethod
+#     def create(cls):
+#         leaderboard = cls()
+#         return leaderboard
+
+# class Session(models.Model):
+#     

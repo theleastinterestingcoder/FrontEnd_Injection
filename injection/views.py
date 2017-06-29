@@ -3,8 +3,35 @@ from django.template import loader
 from injection.models import Session
 from injection.models import Seating
 from django.shortcuts import get_object_or_404, render
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
+def login_request(request):
+    if not request.user.is_authenticated() and ('username' not in request.POST.keys() or 'password' not in request.POST.keys()):
+        template = loader.get_template('login_request.html')
+        return HttpResponse(template.render({}, request))
 
+    if (not request.user.is_authenticated()):
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+        else:
+            return HttpResponse('login failed!')
+    else:
+        user = request.user
+
+    context = {'team_name': user.username}
+    template = loader.get_template('login_request.html')
+    return HttpResponse(template.render(context, request))
+
+def logout_request(request):
+    logout(request)
+    return login_request(request)
+
+# @login_required
 def index(request):
     template = loader.get_template('index.html')
     first_session = Session.objects.first()
@@ -42,25 +69,36 @@ def submit(request, session_id):
     if ('member_name' not in request.POST.keys() or 'guest_name' not in request.POST.keys()):
         return index(request)
 
-    try:
-        member_name = request.POST['member_name']
-        guest_name = request.POST['guest_name']
-        seating = Seating.create(session,member_name, guest_name)
-        seating.save()
-        session.save()
-    except Exception as e:
-        context = {
-            'session': session,
-            'exception_type' : e.__class__.__name__,
-            'exception' : e,
-        }
-        return HttpResponse(template.render(context, request))
-    else:   
-        context = {
-            'session': session,
-            'success_message' : 'Entry saved successfully',
-        }
-        return HttpResponse(template.render(context, request))
+    member_name = request.POST['member_name']
+    guest_name = request.POST['guest_name']
+    seating = Seating.create(session,member_name, guest_name)
+    seating.save()
+    session.save()
+    context = {
+        'session': session,
+        'success_message' : 'Entry saved successfully',
+    }
+    return HttpResponse(template.render(context, request))
+
+    # try:
+    #     member_name = request.POST['member_name']
+    #     guest_name = request.POST['guest_name']
+    #     seating = Seating.create(session,member_name, guest_name)
+    #     seating.save()
+    #     session.save()
+    # except Exception as e:
+    #     context = {
+    #         'session': session,
+    #         'exception_type' : e.__class__.__name__,
+    #         'exception' : e,
+    #     }
+    #     return HttpResponse(template.render(context, request))
+    # else:   
+    #     context = {
+    #         'session': session,
+    #         'success_message' : 'Entry saved successfully',
+    #     }
+    #     return HttpResponse(template.render(context, request))
 
     # try:
     #     selected_choice = question.choice_set.get(pk=request.POST['choice'])
