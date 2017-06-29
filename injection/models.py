@@ -27,9 +27,9 @@ class FlagClaim(models.Model):
     team_submit = models.ForeignKey(User, blank=True, null=True)
     last_modified = models.DateTimeField(auto_now=True)
     leaderboard = models.ForeignKey(LeaderBoard, on_delete=models.CASCADE)
-    comment = models.CharField(max_length=255)
-    current_team = models.CharField(max_length=255)
-    previous_team = models.CharField(max_length=255)
+    comment = models.CharField(max_length=1024)
+    current_team = models.CharField(max_length=1024)
+    previous_team = models.CharField(max_length=1024)
 
     @classmethod
     def create(cls, leaderboard, comment, current_team, previous_team, team_submit = None):

@@ -7,7 +7,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from injection.models import Session, LeaderBoard, FlagClaim
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def login_request(request, context = {}):
     if not request.user.is_authenticated() and ('username' not in request.POST.keys() or 'password' not in request.POST.keys()):
         template = loader.get_template('login_request.html')
@@ -33,10 +35,12 @@ def login_request(request, context = {}):
     template = loader.get_template('login_request.html')
     return HttpResponse(template.render(context, request))
 
+@csrf_exempt
 def logout_request(request):
     logout(request)
     return login_request(request)
 
+@csrf_exempt
 def create_user(request, context = {}, force_recreate = False):
     template = loader.get_template('create_user.html')
     if (request.user.is_authenticated()):
@@ -60,7 +64,7 @@ def create_user(request, context = {}, force_recreate = False):
         context['error_message'] = 'Username is taken'
         return create_user(request, context, True)
 
-
+@csrf_exempt
 def index(request):
     template = loader.get_template('index.html')
     open_session = Session.objects.filter(name='Open Session').first()
@@ -81,6 +85,7 @@ def index(request):
 
     return HttpResponse(template.render(context, request))
 
+@csrf_exempt
 @login_required(login_url='/injection/login')
 def reset_session(request, session_id):
 
@@ -103,6 +108,7 @@ def reset_session(request, session_id):
 
     return HttpResponse(template.render(context, request))
 
+@csrf_exempt
 @login_required(login_url='/injection/login')
 def view_session(request, session_id, leaderboard_id):
     session = get_object_or_404(Session, pk=session_id)
@@ -155,6 +161,7 @@ def view_session(request, session_id, leaderboard_id):
 
     return HttpResponse(template.render(context, request))
 
+@csrf_exempt
 @login_required(login_url='/injection/login')
 def my_session(request):
     # look for session
