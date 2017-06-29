@@ -15,5 +15,5 @@ Description - a TA developer forgot to escape strings on his web page. Vandalize
 
 Challenge 2 : Cross site scripting
 ----------
-Description - The same TA developer forgot to enable features that prevents cross site forgery exceptions. Write a query that will log out any logged in users when they see the page. Bonus points (+5) if you can lock the open session. 
+Description - The same TA developer forgot to enable features that prevents cross site forgery exceptions. Write a query that will log out any logged in users when they see the page. Bonus points (+5) if you successfully lock the open session with you as last flag claimer
 
