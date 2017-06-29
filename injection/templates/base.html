@@ -81,8 +81,17 @@
                                 <a href="/injection"><i class="fa fa-dashboard fa-fw"></i> Open Session</a>
                             </li>
                             <li>
-                                <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> My Session</span></a>
+                                <a href="/injection/my_session"><i class="fa fa-bar-chart-o fa-fw"></i> My Session</span></a>
                                 <!-- /.nav-second-level -->
+                            </li>
+                            <li>
+                                <a href="/injection/create_user"><i class="fa fa-user  fa-fw"></i>Create Team</span></a>
+                            </li>
+                            <li>
+                                <a href="/injection/login"><i class="fa fa-sign-in fa-fw"></i>{% if user.is_authenticated %}Logged in:{{user.username}}{% else %} Login {% endif %}</span></a>
+                            </li>
+                            <li>
+                                <a href="/injection/logout"><i class="fa fa-sign-out fa-fw"></i>Logout</span></a>
                             </li>
                         </ul>
                     </div>

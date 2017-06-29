@@ -3,7 +3,7 @@
 <div id="page-wrapper">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1 class="page-header">Session: {{ session.team_name }}</h1>
+                        <h1 class="page-header">{{ session.name }}</h1>
                     </div>
 
                     {% if reset_message %}
@@ -17,28 +17,32 @@
                 <!-- /.row -->
                 <div class="row">
                     <div class="col-lg-3 col-md-6">
-                        <div class="panel panel-green">
+
+                        <div class="panel 
+                        {% if current_user_is_winning %} panel-green {% else %} panel-red {% endif %}
+                        ">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-xs-3">
-                                        <i class="fa fa-tasks fa-5x"></i>
+                                        <i class="fa fa-flag fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">0</div>
-                                        <div>Submit Answer</div>
+                                        <div class="huge">FLAG
+                                        </div>
+                                        <div>Currently belongs to</div>
                                     </div>
                                 </div>
                             </div>
                             <a href="#">
                                 <div class="panel-footer">
-                                    <span class="pull-left">[Not implemented yet]</span>
+                                    <span class="pull-left">{{ winning_team }}</span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                     <div class="clearfix"></div>
                                 </div>
                             </a>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6">
+                    <!-- <div class="col-lg-3 col-md-6">
                         <div class="panel panel-red">
                             <div class="panel-heading">
                                 <div class="row">
@@ -46,8 +50,8 @@
                                         <i class="fa fa-support fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge"> {{session.number_of_resets}}</div>
-                                        <div>Reset Session</div>
+                                        <div class="huge"></div>
+                                        <div>Wipe Leaderboard</div>
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +63,7 @@
                                 </div>
                             </a>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
@@ -86,19 +90,19 @@
                                             {{ success_message }}
                                             </div>
                                             {% endif %}
-                                            <form action="/injection/submit/{{session.id}}" method="post">
+                                            <form action="/injection/submit/{{session.id}}/{{leaderboard.id}}" method="post">
                                                 {% csrf_token %}
                                                 <div class="form-group">
-                                                    <label>Member Name</label>
-                                                    <input class="form-control" name="member_name">
-                                                    <p class="help-block">Name of the member</p>
+                                                    <label>Team Name</label>
+                                                    <input class="form-control" name="team_name" value="{% if user.is_authenticated %}{{ user.username }}{% endif %} " >
+                                                    <p class="help-block"></p>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>Guest Name</label>
-                                                    <input class="form-control" name="guest_name">
-                                                    <p class="help-block">Guest of your friend</p>
+                                                    <label>Comment</label>
+                                                    <input class="form-control" name="comment">
+                                                    <p class="help-block">Taunt other people</p>
                                                 </div>
-                                                <button type="submit" class="btn btn-default">Submit</button>
+                                                <button type="submit" class="btn btn-default">Claim</button>
                                                 <button type="reset" class="btn btn-default">Clear Form</button>
                                             </form>
                                         <div class="col-lg-4">
@@ -117,66 +121,33 @@
                     <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Signup page
+                            Current flag leader: {{ winning_team }}
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
                                 <thead>
                                     <tr>
-                                        <th>Rendering engine</th>
-                                        <th>Browser</th>
-                                        <th>Platform(s)</th>
-                                        <th>Engine version</th>
-                                        <th>CSS grade</th>
+                                        <th>Current Team</th>
+                                        <th>Comment</th>
+                                        <th>Stolen From</th>
+                                        <th>Time claimed</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="odd gradeX">
-                                        <td>Trident</td>
-                                        <td>Internet Explorer 4.0</td>
-                                        <td>Win 95+</td>
-                                        <td class="center">4</td>
-                                        <td class="center">X</td>
-                                    </tr>
-                                    <tr class="even gradeC">
-                                        <td>Trident</td>
-                                        <td>Internet Explorer 5.0</td>
-                                        <td>Win 95+</td>
-                                        <td class="center">5</td>
-                                        <td class="center">C</td>
-                                    </tr>
-                                    <tr class="odd gradeA">
-                                        <td>Trident</td>
-                                        <td>Internet Explorer 5.5</td>
-                                        <td>Win 95+</td>
-                                        <td class="center">5.5</td>
-                                        <td class="center">A</td>
-                                    </tr>
-                                    <tr class="even gradeA">
-                                        <td>Trident</td>
-                                        <td>Internet Explorer 6</td>
-                                        <td>Win 98+</td>
-                                        <td class="center">6</td>
-                                        <td class="center">A</td>
-                                    </tr>
-
                                     <ul>
-                                    {% for seating in session.seating_set.all %}
+                                    {% for claim in leaderboard.sorted_flagclaim_set %}
                                     <tr class="even gradeA">
-                                        <td>{{seating.member|escape|safe}}</td>
-                                        <td>{{seating.guest|escape|safe}}</td>
+                                        <td>{{claim.current_team|escape|safe}}</td>
+                                        <td>{{claim.comment|escape|safe}}</td>
+                                        <td>{{claim.previous_team|escape|safe}}</td>
+                                        <td>{{claim.last_modified|date:'Y-m-d h:i A'}}</td>
                                     </tr>
                                     {% endfor %}
                                     </ul>
                                 </tbody>
                             </table>
                             <!-- /.table-responsive -->
-                            <div class="well">
-                                <h4>DataTables Usage Information</h4>
-                                <p>DataTables is a very flexible, advanced tables plugin for jQuery. In SB Admin, we are using a specialized version of DataTables built for Bootstrap 3. We have also customized the table headings to use Font Awesome icons in place of images. For complete documentation on DataTables, visit their website at <a target="_blank" href="https://datatables.net/">https://datatables.net/</a>.</p>
-                                <a class="btn btn-default btn-lg btn-block" target="_blank" href="https://datatables.net/">View DataTables Documentation</a>
-                            </div>
                         </div>
                         <!-- /.panel-body -->
                     </div>

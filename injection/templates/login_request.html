@@ -7,10 +7,10 @@
         <div class="col-xs-12">
             {% if user.is_authenticated %}
                 <h1 class="page-header">You are logged in as: {{ user.username }}</h1>
-                <p>You may login again as another user <a href="/injection/logout"><i class="fa fa-sign-out fa-fw"></i>Logout</a></p>
+                <p> Go and vandalize some pages!<a href="/injection/logout"><i class="fa fa-sign-out fa-fw"></i>Logout</a></p>
             {% else %}
                 <h1 class="page-header">You are not logged in</h1>
-                <p>(You need to be logged in to make any submissions!)</p>
+                <p>(You need to be logged in to make any submissions!). If you need to create a team, use the tabs to the left.</p>
             {% endif %} 
         </div>
         

@@ -1,33 +1,39 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.db import models
+from django.contrib.auth.models import User
 
 class Session(models.Model):
-    team_name = models.CharField(max_length=200, unique=True)
-    number_of_resets = models.IntegerField(default=0)
-    number_of_submission_attempts = models.IntegerField(default=0)
-    IsSolved = models.BooleanField(default=True)
+    name = models.CharField(max_length=200, unique=True)
+    team = models.OneToOneField(User, unique=True, blank=True, null=True)
 
     @classmethod
-    def create(cls, team_name):
-        session = cls(team_name=team_name)
+    def create(cls, name, team=None):
+        session = cls(name=name, team=team)
         return session
 
-class Seating(models.Model):
-    member = models.CharField(max_length=200)
-    guest = models.CharField(max_length=200)
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+class LeaderBoard(models.Model):
+    session = models.ForeignKey(Session)
 
     @classmethod
-    def create(cls, session, member, guest):
-        seating = cls(session=session, member=member, guest=guest)
-        return seating
+    def create(cls, session):
+        leaderboard = cls(session = session)
+        return leaderboard
+    @property
+    def sorted_flagclaim_set(self):
+        return self.flagclaim_set.order_by('-last_modified')
 
-# class LeaderBoard(models.Model):
-#     @classmethod
-#     def create(cls):
-#         leaderboard = cls()
-#         return leaderboard
+class FlagClaim(models.Model):
+    team_submit = models.ForeignKey(User, blank=True, null=True)
+    last_modified = models.DateTimeField(auto_now=True)
+    leaderboard = models.ForeignKey(LeaderBoard, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=255)
+    current_team = models.CharField(max_length=255)
+    previous_team = models.CharField(max_length=255)
 
-# class Session(models.Model):
-#     
+    @classmethod
+    def create(cls, leaderboard, comment, current_team, previous_team, team_submit = None):
+        claim = cls(team_submit=team_submit, leaderboard=leaderboard, current_team=current_team, previous_team=previous_team, comment=comment)
+        return claim
+
+
